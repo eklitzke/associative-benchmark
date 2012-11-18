@@ -44,7 +44,7 @@ generated in 532 ms
 
 sorted list
 ----------
-create: 84
+create: 79
 search: 209
 
 map
@@ -69,7 +69,7 @@ generated in 532 ms
 
 sorted list
 ----------
-create: 87
+create: 79
 search: 210
 
 map
@@ -108,7 +108,7 @@ generated in 1224 ms
 
 sorted list
 ----------
-create: 902
+create: 835
 search: 1023
 
 map
@@ -133,7 +133,7 @@ generated in 1132 ms
 
 sorted list
 ----------
-create: 852
+create: 844
 search: 1038
 
 map

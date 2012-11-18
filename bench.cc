@@ -36,10 +36,7 @@ void RunBench(const std::vector<std::pair<T, T> > &pairs, bool reserve) {
   {
     std::cout << "\nsorted list\n----------" << std::endl;
     Timer timer;
-    std::vector<std::pair<T, T> > list;
-    for (const auto &kv : pairs) {
-      list.push_back(kv);
-    }
+    std::vector<std::pair<T, T> > list = pairs;
     std::sort(list.begin(), list.end());
     std::cout << "create: " << timer.elapsed_ms() << std::endl;
 
