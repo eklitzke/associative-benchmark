@@ -1,3 +1,4 @@
+#include <algorithm>
 #include <chrono>
 #include <iostream>
 #include <fstream>
@@ -31,9 +32,27 @@ class Timer {
 };
 
 template <typename T>
-void RunBench(const std::vector<std::pair<T, T> > &pairs,
-              bool reserve,
-              std::size_t num) {
+void RunBench(const std::vector<std::pair<T, T> > &pairs, bool reserve) {
+  {
+    std::cout << "\nsorted list\n----------" << std::endl;
+    Timer timer;
+    std::vector<std::pair<T, T> > list;
+    for (const auto &kv : pairs) {
+      list.push_back(kv);
+    }
+    std::sort(list.begin(), list.end());
+    std::cout << "create: " << timer.elapsed_ms() << std::endl;
+
+    timer.reset();
+    for (const auto &kv : pairs) {
+      std::binary_search(
+          list.cbegin(), list.cend(), kv,
+          [&](const std::pair<T, T> &a,
+              const std::pair<T, T> &b) { return a.first < b.first; });
+    }
+    std::cout << "search: " << timer.elapsed_ms() << std::endl;
+  }
+
   {
     std::cout << "\nmap\n----------" << std::endl;
     Timer timer;
@@ -55,7 +74,7 @@ void RunBench(const std::vector<std::pair<T, T> > &pairs,
     Timer timer;
     std::unordered_map<T, T> hash;
     if (reserve) {
-      hash.reserve(num);
+      hash.reserve(pairs.size());
     }
     for (const auto &kv : pairs) {
       hash.insert(kv);
@@ -82,7 +101,7 @@ int main(int argc, char **argv) {
   while ((c = getopt(argc, argv, "hrsn:")) != -1) {
     switch (c) {
       case 'h':
-        std::cout << "usage: " << argv[0] << " [-h] [-r] [-n num]\n";
+        std::cout << "usage: " << argv[0] << " [-h] [-r] [-x] [-n num]\n";
         return 0;
         break;
       case 'n':
@@ -95,7 +114,7 @@ int main(int argc, char **argv) {
         use_string = true;
         break;
       default:
-        std::cout << "usage: " << argv[0] << " [-h] [-n num]\n";
+        std::cout << "usage: " << argv[0] << " [-h] [-r] [-n num]\n";
         return 1;
     }
   }
@@ -119,7 +138,7 @@ int main(int argc, char **argv) {
                                         std::string(charbuf + 8, 8)));
     }
     std::cout << "generated in " << gen_timer.elapsed_ms() << " ms\n";
-    RunBench<std::string>(pairs, reserve, num);
+    RunBench<std::string>(pairs, reserve);
   } else {
     std::vector<std::pair<int, int> > pairs;
     if (reserve) {
@@ -135,7 +154,7 @@ int main(int argc, char **argv) {
       pairs.emplace_back(std::make_pair(key, val));
     }
     std::cout << "generated in " << gen_timer.elapsed_ms() << " ms\n";
-    RunBench<int>(pairs, reserve, num);
+    RunBench<int>(pairs, reserve);
   }
 
   return 0;
