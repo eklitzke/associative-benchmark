@@ -26,8 +26,9 @@ dict
 ---------
 create: 458
 search: 270
+```
 
-
+```
 evan@loonix ~/code/associative-benchmark (master) $ ./bench
 generating number list with 1000000 integer pairs...
 generated in 534 ms
@@ -45,8 +46,9 @@ search: 77
 bucket count = 1236397
 load factor = 0.808713
 max load factor = 1
+```
 
-
+```
 evan@loonix ~/code/associative-benchmark (master) $ ./bench -r
 generating number list with 1000000 integer pairs...
 generated in 534 ms
