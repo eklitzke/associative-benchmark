@@ -39,13 +39,18 @@ search: 270
 
 ```
 evan@loonix ~/code/associative-benchmark (master) $ ./bench -r
-generating number list with 1000000 integer pairs...
-generated in 534 ms
+generating list with 1000000 integer pairs...
+generated in 532 ms
+
+sorted list
+----------
+create: 84
+search: 209
 
 map
 ----------
-create: 629
-search: 637
+create: 637
+search: 610
 
 hash
 ----------
@@ -53,27 +58,32 @@ create: 341
 search: 58
 
 bucket count = 2144977
-load factor = 0.466144
+load factor = 0.466147
 max load factor = 1
 ```
 
 ```
 evan@loonix ~/code/associative-benchmark (master) $ ./bench
 generating list with 1000000 integer pairs...
-generated in 534 ms
+generated in 532 ms
+
+sorted list
+----------
+create: 87
+search: 210
 
 map
 ----------
-create: 640
-search: 621
+create: 637
+search: 610
 
 hash
 ----------
-create: 470
-search: 77
+create: 473
+search: 79
 
 bucket count = 1236397
-load factor = 0.808713
+load factor = 0.808722
 max load factor = 1
 ```
 
@@ -94,17 +104,22 @@ search: 260
 ```
 evan@loonix ~/code/associative-benchmark (master) $ ./bench -s -r
 generating list with 1000000 string pairs...
-generated in 1124 ms
+generated in 1224 ms
+
+sorted list
+----------
+create: 902
+search: 1023
 
 map
 ----------
-create: 1418
+create: 1402
 search: 1386
 
 hash
 ----------
-create: 408
-search: 105
+create: 399
+search: 104
 
 bucket count = 2144977
 load factor = 0.466205
@@ -114,16 +129,21 @@ max load factor = 1
 ```
 evan@loonix ~/code/associative-benchmark (master) $ ./bench -s
 generating list with 1000000 string pairs...
-generated in 1141 ms
+generated in 1132 ms
+
+sorted list
+----------
+create: 852
+search: 1038
 
 map
 ----------
-create: 1322
-search: 1309
+create: 1337
+search: 1332
 
 hash
 ----------
-create: 569
+create: 548
 search: 136
 
 bucket count = 1236397
