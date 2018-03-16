@@ -7,7 +7,9 @@
 #include <vector>
 
 #include <stdlib.h>
+#ifndef _MSC_VER
 #include <unistd.h>
+#endif
 
 class Timer {
  public:
@@ -33,6 +35,7 @@ class Timer {
 
 template <typename T>
 void RunBench(const std::vector<std::pair<T, T> > &pairs, bool reserve) {
+  unsigned found = 0;
   {
     std::cout << "\nsorted list\n----------" << std::endl;
     Timer timer;
@@ -42,10 +45,11 @@ void RunBench(const std::vector<std::pair<T, T> > &pairs, bool reserve) {
 
     timer.reset();
     for (const auto &kv : pairs) {
-      std::binary_search(
+      auto f = std::binary_search(
           list.cbegin(), list.cend(), kv,
           [&](const std::pair<T, T> &a,
               const std::pair<T, T> &b) { return a.first < b.first; });
+      found += (f);
     }
     std::cout << "search: " << timer.elapsed_ms() << std::endl;
   }
@@ -61,7 +65,8 @@ void RunBench(const std::vector<std::pair<T, T> > &pairs, bool reserve) {
 
     timer.reset();
     for (const auto &kv : pairs) {
-      map.find(kv.first);
+      auto it = map.find(kv.first);
+      found += (it != map.end());
     }
     std::cout << "search: " << timer.elapsed_ms() << std::endl;
   }
@@ -80,7 +85,8 @@ void RunBench(const std::vector<std::pair<T, T> > &pairs, bool reserve) {
 
     timer.reset();
     for (const auto &kv : pairs) {
-      hash.find(kv.first);
+      auto it = hash.find(kv.first);
+      found += (it != hash.end());
     }
     std::cout << "search: " << timer.elapsed_ms() << "\n\n";
 
@@ -88,6 +94,7 @@ void RunBench(const std::vector<std::pair<T, T> > &pairs, bool reserve) {
     std::cout << "load factor = " << hash.load_factor() << "\n";
     std::cout << "max load factor = " << hash.max_load_factor() << "\n";
   }
+  std::cout << "found count = " << found << "\n";
 }
 
 int main(int argc, char **argv) {
@@ -95,6 +102,7 @@ int main(int argc, char **argv) {
   bool use_string = false;
   bool reserve = false;
   std::size_t num = 1000000;
+#ifndef _MSC_VER
   while ((c = getopt(argc, argv, "hrsn:")) != -1) {
     switch (c) {
       case 'h':
@@ -115,6 +123,29 @@ int main(int argc, char **argv) {
         return 1;
     }
   }
+#else
+  for (c=1; c<argc; ++c) {
+    char *arg = argv[c];
+    if (strcmp(arg, "-h") == 0) {
+        std::cout << "usage: " << argv[0] << " [-h] [-r] [-x] [-n num]\n";
+        return 0;
+    } else if (strcmp(arg, "-n") == 0) {
+        if (c == argc-1) {
+          std::cout << "Error: value is required for -n\n";
+          return 1;
+        }
+        num = static_cast<std::size_t>(atoi(argv[c+1]));
+        c++;
+    } else if (strcmp(arg, "-r") == 0) {
+        reserve = true;
+    } else if (strcmp(arg, "-s") == 0) {
+        use_string = true;
+    } else {
+        std::cout << "usage: " << argv[0] << " [-h] [-r] [-n num]\n";
+        return 1;
+    }
+  }
+#endif
 
   std::cout << "generating list with " << num
             << (use_string ? " string " : " integer ")

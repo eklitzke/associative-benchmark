@@ -1,0 +1,2 @@
+bench.exe: bench.cc
+	cl /Ox bench.cc /EHsc
